@@ -285,7 +285,7 @@ def Module_2(directory_path, xml_name, gpkg_filepath, root, district,
         # xml.cut(district, ground_data, MO_dhn, footprints)
 
         xml.write_xml_file(root, xml_to_create_path)
-        print(f'{xml_DHN}_sc_{sc_id}.xml file created \n')
+        # print(f'{xml_DHN}_sc_{sc_id}.xml file created \n')
 
 #--------------------- KPI calculation
 
