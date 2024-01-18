@@ -48,6 +48,10 @@ Each modification is signaled with *#TODO*.
 The required libraries to import are listed in the *requirements.txt* file
 
 ### Results
+A result could be obatined fastly by running main_code with UHI_test.gpkg
+The result of my case study could be shown by replacing UHI_test.gpkg with lausanne_case.gpkg
+
 The resulted .xml file is under the directory path defined in "main_code"
 And resulted temperature layers could be found with prefix "All_AST" in the .gpkg file used
+
 
