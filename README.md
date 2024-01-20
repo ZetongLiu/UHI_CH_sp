@@ -107,17 +107,20 @@ The case is a neighbourhood around fountaine de la Justice, Lausanne with dense 
 The 3D model is simulated in CitySim pro.
 ![3D view](image/3D_view.png)
 
-Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050 and visualise reseults in QGIS. All relevant images can be found under folder *image*. A sample is shown below:
+Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050, visualise reseulted temperature data in QGIS. All relevant images can be found under folder *image*. A sample is shown below with blue reresenting low temperature, read representing high temperature:
 
-![Default_2050](image/default_2050.png)
-![sc1_2050](image/sc1_2050.png)
-![Difference_2050](image/difference_2050.png)
+1. The defalut case study at 2050
+![Default case at 2050](image/default_2050.png)
+2. Add green areas to it
+![Scenario 1 at 2050](image/sc1_2050.png)
+3. Magnitude of decreased temperature after adding green areas
+![Difference 2050](image/difference_2050.png)
 
 
 ## Conclusion
 In this project, open source datasets are obtained for different types of grounds. And based on them, mesh of grounds are created, and different ground surfaces are attributed right type and respective physical characteristics. The resulted .xml file is run the case of Lausanne and visualised in CitySim Pro.
 
-1 scenario, i.e. substituting original grounds of certain areas with green grounds, is demonstrated and its effects on urban heat islands is visualised in QGIS. 
+One scenario, i.e. substituting original grounds of certain areas with green grounds, is demonstrated and its effects on urban heat islands is visualised in QGIS. 
 
 ## Prospect
 1. Develop an algorithm that can create adaptive mesh of grounds, i.e. finer mesh at sharp part of geometry objects.
