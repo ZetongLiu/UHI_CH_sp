@@ -134,8 +134,10 @@ One scenario, i.e. substituting original grounds of certain areas with green gro
 3. Add water into framework and study their effects on UHI
 
 ## Reference
-1. Upadhyay, G ; Kämpf, J; Scartezzini, J: Ground temperature modeling: The case study of Rue des Maraîchers in Geneva, 2014, URL: https://infoscience.epfl.ch/record/198754?ln=fr
-2. https://github.com/kaemco/CitySim-Solver/wiki/The-district#groundsurface
+1. https://github.com/ochavanne/CAD-O
+2. Upadhyay, G ; Kämpf, J; Scartezzini, J: Ground temperature modeling: The case study of Rue des Maraîchers in Geneva, 2014, URL: https://infoscience.epfl.ch/record/198754?ln=fr
+3. https://github.com/kaemco/CitySim-Solver/wiki/The-district#groundsurface
+
 
 
 
