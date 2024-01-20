@@ -116,10 +116,10 @@ Run case-study with XYZ file of resolution being 2 meter, meteorological data fo
 <!-- ![Scenario 1 at 2050](image/sc1_2050.png) -->
 <img src="image/sc1_2050.png" alt="Scenario 1 at 2050" width="500"/>
 The scale of two images above is 
-<img src="image/scale1.png" alt="scl1" width="500"/>
+<img src="image/scale1.png" alt="scl1" width="150"/>
 3. Magnitude of decreased temperature after adding green areas
 <!-- ![Difference 2050](image/difference_2050.png) -->
-<img src="image/difference_2050.png" alt="Difference at 2050" width="150"/>
+<img src="image/difference_2050.png" alt="Difference at 2050" width="500"/>
 With scale below
 <img src="image/scale2.png" alt="scl2" width="150"/>
 
