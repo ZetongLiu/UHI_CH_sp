@@ -351,37 +351,6 @@ def add_ground(district, terrain_df, groundtype=1, detailedSimulation=False, Sho
             dict_point = {"x": x, "y": y, "z": z}
             point = SubElement(surface, point_name, dict_point)
 
-def add_ground_from_XYZ(district, terrain_df, center_coordinates=(0,0), kFactor=0.1, groundtype=37, detailedSimulation=False, ShortWaveReflectance=0.35):
-    x_center = center_coordinates[0]
-    y_center = center_coordinates[1]
-    groundsurface = SubElement(district, "GroundSurface")
-    tri_id=0 
-    n=int((len(terrain_df))**0.5)
-    row_diff=[[0, n, n+1], [0, n+1, 1]] 
-    max_x=terrain_df['X'].max()
-    min_y=terrain_df['Y'].min()
-    for r in terrain_df.index:
-        if terrain_df.loc[r,'X'] < max_x and terrain_df.loc[r,'Y'] > min_y:
-            for _ in range(2):
-                dict_surface = {"id": str(tri_id),
-                                "ShortWaveReflectance":str(ShortWaveReflectance),
-                                "type":str(groundtype),
-                                "kFactor": str(kFactor),
-                                "detailedSimulation":str(detailedSimulation).lower()}
-                surface = SubElement(groundsurface, "Ground", dict_surface)
-            # Add points
-                for p in range(3):
-                    point_name = "V{}".format(p)
-                    coordinates = terrain_df.loc[r+row_diff[tri_id%2][p]]
-                    x = str(coordinates['X']-x_center)
-                    y = str(coordinates['Y']-y_center)
-                    z = str(coordinates['Z'])
-                    
-                    dict_point = {"x": x, "y": y, "z": z}
-                    point = SubElement(surface, point_name, dict_point)
-                tri_id+=1
-
-
 def add_ground_cut(MO_dhn, district, terrain_df, zone_box, center_coordinates=(0,0), kFactor=0.1, groundtype=37, detailedSimulation=False, ShortWaveReflectance=0.35):  
     x_center = center_coordinates[0]
     y_center = center_coordinates[1]
@@ -426,95 +395,6 @@ def add_ground_cut(MO_dhn, district, terrain_df, zone_box, center_coordinates=(0
     # out_buildings = ~gdf.geometry.intersects(MO_dhn.geometry.unary_union)
     # gdf=gdf[out_buildings]
     return gdf
-
-def add_ground_new(district, terrain_df, zone_box, center_coordinates=(0,0), kFactor=1, groundtype=37, detailedSimulation=False, ShortWaveReflectance=0.3):  
-    x_center = center_coordinates[0]
-    y_center = center_coordinates[1]
-    groundsurface = SubElement(district, "GroundSurface")
-    tri_id=0 
-    n=int((len(terrain_df))**0.5)
-    row_diff=[[0, n, n+1], [0, n+1, 1]] 
-    max_x=terrain_df['X'].max()
-    min_y=terrain_df['Y'].min()
-    # gdf = gpd.GeoDataFrame(columns=['geometry'], crs="EPSG:2056")
-    # data_to_append = []
-    geometry_list = []
-    for r in terrain_df.index:
-        if terrain_df.loc[r,'X'] < max_x and terrain_df.loc[r,'Y'] > min_y:
-            for _ in range(2):
-                dict_surface = {"id": str(tri_id),
-                                "ShortWaveReflectance":str(ShortWaveReflectance),
-                                "type":str(groundtype),
-                                "kFactor": str(kFactor),
-                                "detailedSimulation":str(detailedSimulation).lower()}
-                surface = SubElement(groundsurface, "Ground", dict_surface)
-            # Add points
-                x=[0]*3
-                y=[0]*3
-                z=[0]*3
-                for p in range(3):
-                    point_name = "V{}".format(p)
-                    coordinates = terrain_df.loc[r+row_diff[tri_id%2][p]]
-                    x[p] = coordinates['X']-x_center
-                    y[p] = coordinates['Y']-y_center
-                    z[p] = coordinates['Z']
-                    vortex=Point(coordinates['X'], coordinates['Y'])
-                    dict_point = {"x": str(x[p]), "y": str(y[p]), "z": str(z[p])}
-                    if vortex.within(zone_box):
-                        point = SubElement(surface, point_name, dict_point)
-                coords = ((x[0]+x_center,y[0]+y_center,z[0]),(x[1]+x_center,y[1]+y_center,z[1]),(x[2]+x_center,y[2]+y_center,z[2]))
-                triangle = Polygon([(x[0]+x_center,y[0]+y_center),(x[1]+x_center,y[1]+y_center),(x[2]+x_center,y[2]+y_center)])
-                if triangle.within(zone_box):
-                    #id_list.append()
-                    geometry_list.append(Polygon(coords))
-                # gdf = gdf.append({'geometry': Polygon(coords)}, ignore_index=True)
-                # data_to_append.append({'Triangle': Polygon(coords)})
-                # polygon = orient(polygon, sign=1.0)
-                tri_id+=1
-    # df = pd.concat([df, pd.DataFrame(data_to_append)], ignore_index=True)
-    gdf = gpd.GeoDataFrame(geometry=geometry_list, crs='EPSG:2056')
-    return gdf
-
-
-def scenario1(district, ground_data, street_data, road_groundtype=2):
-    
-    geometry_list = []
-    road_width={'Autobahn': 7, # E41 typical width of lanes is 3.5m, two lanes=7m
-                '10m Strasse': 10,
-                '8m Strasse': 8,
-                '6m Strasse': 6,
-                '3m Strasse': 3,
-                '2m Weg': 2,
-                '4m Strasse': 4,
-                '1m Weg': 1
-                }
-    road_index_list=[]
-    # green_index_list=[]
-    for index, row in street_data.iterrows():
-        line = row['geometry']
-        road_type=row['objektart'] 
-        buffered_line = line.buffer(road_width[road_type]/2, cap_style='flat')
-        geometry_list.append(buffered_line)
-        road_ground = ground_data[ground_data['geometry'].intersects(buffered_line)]
-        road_indices = road_ground['gid'].values
-        road_index_list += road_indices.tolist()
-
-    buffered_streets = gpd.GeoDataFrame(geometry=geometry_list, crs='EPSG:2056')
-
-    # for index, row in green_data.iterrows():
-    #     single_block = row['geometry']
-    #     green_ground = ground_data[ground_data['geometry'].intersects(single_block)]
-    #     green_indices = green_ground['gid'].values
-    #     green_index_list += green_indices.tolist()
-
-    grounds = district.find("GroundSurface")
-    for surface in grounds.iter("Ground"):
-        current_id = surface.attrib["id"]
-        if int(current_id) in road_index_list:
-            surface.set("type", str(road_groundtype))
-        # elif int(current_id) in green_index_list:
-        #     surface.set("type", str(green_groundtype))
-    return road_index_list, buffered_streets
 
 def modify_type(district, ground_data, green_data=None, street_data=None, green_groundtype=3, road_groundtype=2, green_kfactor=0.7, green_SWR=0.22, road_SWR=0.14):
     

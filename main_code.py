@@ -17,13 +17,13 @@ import os
 import matplotlib.pyplot as plt
 
 # Local libraries
-from enerCAD.building import generate_envelope
-from enerCAD.building import generate_buildings
-import enerCAD.xml as xml
-import enerCAD.result as result
-import enerCAD.network as network
-import enerCAD.production as prod
-import enerCAD.KPI as KPI
+from uhiCAD.building import generate_envelope
+from uhiCAD.building import generate_buildings
+import uhiCAD.xml as xml
+# import enerCAD.result as result
+# import enerCAD.network as network
+# import uhiCAD.production as prod
+# import uhiCAD.KPI as KPI
 
 # URL for RegBL API request
 GEOADMIN_BASE_URL = "https://api.geo.admin.ch/rest/services/ech/MapServer/ch.bfs.gebaeude_wohnungs_register/"
@@ -315,7 +315,7 @@ def Module_KPI(ground_data, buffered_streets, itsctd_greens, road_index_list, gr
 ##################################################
 
 # Geopackage filepath
-gpkg_filepath = r"D:\Document\SemesterProject\Urban-Heat-Island-Project\UHI_test.gpkg"                       #TODO
+gpkg_filepath = r"D:\Document\EPFL_Coursework\UHI_CH\dependent_files\lausanne_case.gpkg"                     #TODO
 
 # Create geometry with swissbuildings3D
 create_geometry_3D = True                                   #TODO
@@ -327,13 +327,9 @@ calculate_volume_3D = True                                 #TODO
 citysim_filepath = r"D:\Document\SemesterProject\CitySim.exe" #TODO
 
 # XML name to export
-
-directory_path = r"Lausanne_result_test" #+f"_{Year_of_cli}"                                #TODO
-
-os.makedirs(directory_path, exist_ok=True)
+directory_path = r"fountaine_Lausanne" #+f"_{Year_of_cli}"                                #TODO
+os.makedirs(directory_path, exist_ok=True)                           
                                       
-xml_name = directory_path                                       
-
 # XML source files
 xml_base_file = r"D:\Document\SemesterProject\CAD-O-main\xml_base.xml"    #TODO                   
 horizon_file = r"D:\CitySimPro\CitySimPro\Windows\Resources\climateFiles\Lausanne.hor"    #TODO     
@@ -350,20 +346,23 @@ def main():
     print('***Module 1*** \n')
     Year_of_cli=['Contemporary', '2030', '2040'] 
     for year in Year_of_cli:
+        subdirectory_path = os.path.join(directory_path, f"{year}")
+        os.makedirs(subdirectory_path, exist_ok=True)     
+        xml_name = directory_path+f'_{year}' 
         climate_file = rf"D:\Document\SemesterProject\New_case\VD\cli\Morges_{year}.cli"       #TODO  
         envelope, ground_data, buildings, zone_dhn, centrale = Module_1(gpkg_filepath, XYZfile, GEOADMIN_BASE_URL, 
-                                                directory_path, xml_name,
+                                                subdirectory_path, xml_name,
                                                 xml_base_file, climate_file, horizon_file,
                                                 create_geometry_3D, calculate_volume_3D,
                                                 EGID_column='RegBL_EGID')
     
         # 1st CitySim simulation
-        simulate_citysim(directory_path, xml_name, citysim_filepath)
+        simulate_citysim(subdirectory_path, xml_name, citysim_filepath)
         
-        TS_file= os.path.join(directory_path, xml_name+"_TS.out")
+        TS_file= os.path.join(subdirectory_path, xml_name+"_TS.out")
         TS_df = pd.read_csv(TS_file, delimiter='\t')
         _, _, all_AST = xml.AST(envelope, TS_df, ground_data)
-        all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}', driver='GPKG')
+        all_AST.to_file(gpkg_filepath, layer=f'all_AST_{year}', driver='GPKG')
 
         # print('***Module 2*** \n')
         # Module_2(directory_path, xml_name, gpkg_filepath,
@@ -376,17 +375,17 @@ def main():
         for i in range(len(scenarios_list)):
             sc_id = scenarios_list[i]
             print(f'***Scenario {sc_id}*** \n')
-            scenario_path = os.path.join(directory_path, f"Scenario_{sc_id}")
+            scenario_path = os.path.join(subdirectory_path, f"Scenario_{sc_id}")
             simulate_citysim(scenario_path, f'{xml_name}_sc_{sc_id}', citysim_filepath)
             scenario_TS_path= os.path.join(scenario_path, f'{xml_name}_sc_{sc_id}'+"_TS.out")
             scenario_TS_df = pd.read_csv(scenario_TS_path, delimiter='\t')
             _, _, scenario_all_AST = xml.AST(envelope, scenario_TS_df, ground_data)
-            scenario_all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}', driver='GPKG')
+            scenario_all_AST.to_file(gpkg_filepath, layer=f'all_AST_{year}_sc_{sc_id}', driver='GPKG')
             merged_df = gpd.GeoDataFrame(pd.merge(all_AST, scenario_all_AST, on='geometry', suffixes=('_dfT', '_s1')))
             merged_df['T_difference'] = merged_df['T_s1'] - merged_df['T_dfT']
             Dif_df = merged_df[['geometry', 'T_difference']]
             Dif_gdf = gpd.GeoDataFrame(Dif_df, geometry='geometry')
-            Dif_gdf.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}_dif', driver='GPKG')       
+            Dif_gdf.to_file(gpkg_filepath, layer=f'all_AST_{year}_sc_{sc_id}_dif', driver='GPKG')       
                 
             # KPI calculation
             # df_KPI = Module_KPI(results_production, volume_storage, 
@@ -394,10 +393,10 @@ def main():
             
             # KPI_result_list.append(df_KPI)
 
-            print(f"Scenario {sc_id} processed \n")
-        
-        print("***Overall processing finished***")
-        print(f"Find all results and graphs in directory : {directory_path}")
+            print(f"Scenario {sc_id} at {year}processed \n")
+        print(f"year {year} processed \n")
+    print("***Overall processing finished***")
+    print(f"Find all results and graphs in directory : {directory_path}")
 
 if __name__ == "__main__":
     plt.close("all")

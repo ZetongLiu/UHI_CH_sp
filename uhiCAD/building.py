@@ -17,7 +17,7 @@ import pandas as pd
 from shapely.affinity import translate
 from shapely.ops import nearest_points
 
-import enerCAD.dictionaries as dicts
+import uhiCAD.dictionaries as dicts
 
 # Silence pandas warning
 pd.options.mode.chained_assignment = None  # default='warn'
