@@ -3,6 +3,10 @@
 Created on Wed Feb 17 13:18:03 2021
 
 @author: Roberto
+
+
+Modified on Sat Jan 20 11:17:47 2024
+@author: Zetong Liu
 """
 from xml.etree.ElementTree import Element, SubElement, tostring, parse
 from xml.dom.minidom import parseString
@@ -608,8 +612,8 @@ def keep_road(district):
     for surface in to_remove:
         grounds.remove(surface)
 
-def cut(district, ground_data, MO_dhn, footprints):
-    buffered_geometries = MO_dhn.geometry.buffer(10)
+def cut(district, ground_data, MO_dhn, footprints, kept_range=15):
+    buffered_geometries = MO_dhn.geometry.buffer(kept_range)
     convex_hull = buffered_geometries.unary_union.convex_hull
     #remove distant grounds
     grounds = district.find("GroundSurface")
@@ -630,7 +634,7 @@ def cut(district, ground_data, MO_dhn, footprints):
         grounds.remove(surface)
     #remove distant buildings
     to_remove_b=[]
-    buffered_geometries_2 = MO_dhn.geometry.buffer(30)
+    buffered_geometries_2 = MO_dhn.geometry.buffer(kept_range)
     convex_hull_2 = buffered_geometries_2.unary_union.convex_hull
     not_in_convex_hull_mask_2 = ~footprints.geometry.within(convex_hull_2)
     remove_list_2 = footprints.loc[not_in_convex_hull_mask_2, 'bid'].tolist()

@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Jan 17 17:16:28 2024
+Created on Fri Jun 16 17:16:28 2023
 
-@author: Zetong Liu, Olivier Chavanne
+@author: Olivier Chavanne
+
+
+Modified on Sat Jan 20 11:17:47 2024
+@author: Zetong Liu
+
 """
 
 import geopandas as gpd
@@ -322,7 +327,7 @@ calculate_volume_3D = True                                 #TODO
 citysim_filepath = r"D:\Document\SemesterProject\CitySim.exe" #TODO
 
 # XML name to export
-Year_of_cli='Contemporary'  
+
 directory_path = r"Lausanne_result_test" #+f"_{Year_of_cli}"                                #TODO
 
 os.makedirs(directory_path, exist_ok=True)
@@ -330,8 +335,7 @@ os.makedirs(directory_path, exist_ok=True)
 xml_name = directory_path                                       
 
 # XML source files
-xml_base_file = r"D:\Document\SemesterProject\CAD-O-main\xml_base.xml"    #TODO     
-climate_file = r"D:\Document\SemesterProject\New_case\VD\cli\Morges_Contemporary.cli"       #TODO                                    
+xml_base_file = r"D:\Document\SemesterProject\CAD-O-main\xml_base.xml"    #TODO                   
 horizon_file = r"D:\CitySimPro\CitySimPro\Windows\Resources\climateFiles\Lausanne.hor"    #TODO     
 XYZfile = r"D:\Document\SemesterProject\New_case\VD\study_area\Lausanne_alt\SWISSALTI3D_2_XYZ_CHLV95_LN02_2538_1152.xyz"  #TODO     
 # XYZfile_fine = r"D:\Document\SemesterProject\New_case\VD\study_area\SWISSALTI3D_0.5_XYZ_CHLV95_LN02_2527_1151.xyz"
@@ -344,53 +348,56 @@ def main():
     
     # Generate individual buildings XML
     print('***Module 1*** \n')
-    envelope, ground_data, buildings, zone_dhn, centrale = Module_1(gpkg_filepath, XYZfile, GEOADMIN_BASE_URL, 
-                                             directory_path, xml_name,
-                                             xml_base_file, climate_file, horizon_file,
-                                             create_geometry_3D, calculate_volume_3D,
-                                             EGID_column='RegBL_EGID')
- 
-    # 1st CitySim simulation
-    simulate_citysim(directory_path, xml_name, citysim_filepath)
+    Year_of_cli=['Contemporary', '2030', '2040'] 
+    for year in Year_of_cli:
+        climate_file = rf"D:\Document\SemesterProject\New_case\VD\cli\Morges_{year}.cli"       #TODO  
+        envelope, ground_data, buildings, zone_dhn, centrale = Module_1(gpkg_filepath, XYZfile, GEOADMIN_BASE_URL, 
+                                                directory_path, xml_name,
+                                                xml_base_file, climate_file, horizon_file,
+                                                create_geometry_3D, calculate_volume_3D,
+                                                EGID_column='RegBL_EGID')
     
-    TS_file= os.path.join(directory_path, xml_name+"_TS.out")
-    TS_df = pd.read_csv(TS_file, delimiter='\t')
-    _, _, all_AST = xml.AST(envelope, TS_df, ground_data)
-    all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}', driver='GPKG')
-
-    # print('***Module 2*** \n')
-    # Module_2(directory_path, xml_name, gpkg_filepath,
-    #          ground_data, climate_file, horizon_file,
-    #          scenarios_list)
-    
-    KPI_result_list = []
+        # 1st CitySim simulation
+        simulate_citysim(directory_path, xml_name, citysim_filepath)
         
-    # DHN simulation for each scenario
-    for i in range(len(scenarios_list)):
-        sc_id = scenarios_list[i]
-        print(f'***Scenario {sc_id}*** \n')
-        scenario_path = os.path.join(directory_path, f"Scenario_{sc_id}")
-        simulate_citysim(scenario_path, f'{xml_name}_sc_{sc_id}', citysim_filepath)
-        scenario_TS_path= os.path.join(scenario_path, f'{xml_name}_sc_{sc_id}'+"_TS.out")
-        scenario_TS_df = pd.read_csv(scenario_TS_path, delimiter='\t')
-        _, _, scenario_all_AST = xml.AST(envelope, scenario_TS_df, ground_data)
-        scenario_all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}', driver='GPKG')
-        merged_df = gpd.GeoDataFrame(pd.merge(all_AST, scenario_all_AST, on='geometry', suffixes=('_dfT', '_s1')))
-        merged_df['T_difference'] = merged_df['T_s1'] - merged_df['T_dfT']
-        Dif_df = merged_df[['geometry', 'T_difference']]
-        Dif_gdf = gpd.GeoDataFrame(Dif_df, geometry='geometry')
-        Dif_gdf.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}_dif', driver='GPKG')       
+        TS_file= os.path.join(directory_path, xml_name+"_TS.out")
+        TS_df = pd.read_csv(TS_file, delimiter='\t')
+        _, _, all_AST = xml.AST(envelope, TS_df, ground_data)
+        all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}', driver='GPKG')
+
+        # print('***Module 2*** \n')
+        # Module_2(directory_path, xml_name, gpkg_filepath,
+        #          ground_data, climate_file, horizon_file,
+        #          scenarios_list)
+        
+        KPI_result_list = []
             
-        # KPI calculation
-        # df_KPI = Module_KPI(results_production, volume_storage, 
-        #                     scenarios, sc_id, scenario_path, do_plot)
-        
-        # KPI_result_list.append(df_KPI)
+        # DHN simulation for each scenario
+        for i in range(len(scenarios_list)):
+            sc_id = scenarios_list[i]
+            print(f'***Scenario {sc_id}*** \n')
+            scenario_path = os.path.join(directory_path, f"Scenario_{sc_id}")
+            simulate_citysim(scenario_path, f'{xml_name}_sc_{sc_id}', citysim_filepath)
+            scenario_TS_path= os.path.join(scenario_path, f'{xml_name}_sc_{sc_id}'+"_TS.out")
+            scenario_TS_df = pd.read_csv(scenario_TS_path, delimiter='\t')
+            _, _, scenario_all_AST = xml.AST(envelope, scenario_TS_df, ground_data)
+            scenario_all_AST.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}', driver='GPKG')
+            merged_df = gpd.GeoDataFrame(pd.merge(all_AST, scenario_all_AST, on='geometry', suffixes=('_dfT', '_s1')))
+            merged_df['T_difference'] = merged_df['T_s1'] - merged_df['T_dfT']
+            Dif_df = merged_df[['geometry', 'T_difference']]
+            Dif_gdf = gpd.GeoDataFrame(Dif_df, geometry='geometry')
+            Dif_gdf.to_file(gpkg_filepath, layer=f'all_AST_{Year_of_cli}_sc_{sc_id}_dif', driver='GPKG')       
+                
+            # KPI calculation
+            # df_KPI = Module_KPI(results_production, volume_storage, 
+            #                     scenarios, sc_id, scenario_path, do_plot)
+            
+            # KPI_result_list.append(df_KPI)
 
-        print(f"Scenario {sc_id} processed \n")
-    
-    print("***Overall processing finished***")
-    print(f"Find all results and graphs in directory : {directory_path}")
+            print(f"Scenario {sc_id} processed \n")
+        
+        print("***Overall processing finished***")
+        print(f"Find all results and graphs in directory : {directory_path}")
 
 if __name__ == "__main__":
     plt.close("all")
@@ -410,17 +417,3 @@ if __name__ == "__main__":
     duration_overall = end_overall - start_overall
     m, s = divmod(duration_overall, 60)
     print('Overall run time :', "%.0f" %m,'min', "%.0f" %s,'s \n')
-
-
-
-
-
-
-
-
-
-
-
-
-
-

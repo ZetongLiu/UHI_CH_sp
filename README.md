@@ -1,9 +1,10 @@
 # Urban-Heat-Islands-CH
 An open-source framework for the quantification of Urban Heat Islands based on Swiss open-data
 
-> ...
-## Usage
-### Files upload online and import to QGIS
+## Introduction
+
+## Usage of codes
+### Open-source files and import to QGIS
 Choose the geographical zone (tile, canton) for the area of study. Step 1 : Download the files, Step 2 : Import them to QGIS
 
 Swissbuildings3D : 
@@ -17,6 +18,10 @@ MO cadaster
 Terrain
 1. XYZ file format from https://www.swisstopo.admin.ch/en/geodata/height/alti3d.html
 2. Read it with pandas
+
+Alt
+1. Geodatabse format from 
+2. Import ** layers
 
 ### QGIS
 Create a new GeoPackage file. Add layers with the "export features" option of QGIS (export without "fid" field), with names :
@@ -47,10 +52,18 @@ Each modification is signaled with *#TODO*.
 The required libraries to import are listed in the *requirements.txt* file
 
 ### Results
-A result could be obatined fastly by running main_code with UHI_test.gpkg
-The result of my case study could be shown by replacing UHI_test.gpkg with lausanne_case.gpkg
-
 The resulted .xml file is under the directory path defined in "main_code"
 And resulted temperature layers could be found with prefix "All_AST" in the .gpkg file used
+
+## Functions of code for processing ground data
+
+
+## Simulation 
+
+## Conclusion
+
+## Prospect
+
+## Reference
 
 
