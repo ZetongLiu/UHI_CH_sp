@@ -2,11 +2,12 @@
 An open-source framework for the quantification of Urban Heat Islands based on Swiss open-data
 
 ## Introduction
-In this project, open-source dataset are leveraged to build a framework for visualizing urban heat isaland (UHI) effect and demonstrate the application of scenarios on 1 case-study representative of the Swiss landscape, quantifying improvement measures. 
+In this project, open-source dataset are leveraged to build a framework for visualizing urban heat isaland (UHI) effect and demonstrate the application of scenarios on 1 case-study representative of the Swiss urban area. 
 
 ## Usage of codes
 ### Open-source files and import to QGIS
-Choose the geographical zone (tile, canton) for the area of study. Step 1 : Download the files, Step 2 : Import them to QGIS
+Choose the geographical zone (tile, canton) for the area of study. 
+Step 1 : Download the files, Step 2 : Import them to QGIS
 
 Swissbuildings3D : 
 1. Geodatabase format from https://www.swisstopo.admin.ch/en/geodata/landscape/buildings3d3.html#download
@@ -16,13 +17,14 @@ MO cadaster
 1. GeoPackage format from https://geodienste.ch/services/av
 2. Import *lcsf* layer, filter by "Genre"="batiment"
 
-Terrain
+Ground Surface
 1. XYZ file format from https://www.swisstopo.admin.ch/en/geodata/height/alti3d.html
-2. Choose resolution of 2 meter or o.5 meter and read it with pandas
+2. Choose resolution of 2 meter or o.5 meter and load it with pandas.read_table
 
-Alt
+Ground Types 
 1. Geopackage format from https://www.swisstopo.admin.ch/de/landschaftsmodell-swisstlm3d
-2. Import *tlm_bb_bodenbedeckung/tlm_strassen_strasse* layers 
+2. Import *tlm_bb_bodenbedeckung* layer, filter by 'objektart' IN ('Wald', 'Gehoelzflaeche', 'Gebueschwald', 'Wald offen')
+3. Import *tlm_strassen_strasse* layer, filter by "objektart" NOT IN ('Verbindung','Platz')
 
 Scenario1
 1. Create a new layer with polygon objects representing newly added green grounds in QGIS
@@ -83,31 +85,33 @@ Shortwaverefletance represents the ability to reflect solar energy and if the gr
 [Sources](#Reference)
 
 ## Functions of code for processing ground data
-Functions below are added to xml.py
-add_ground_from_XYZ: 
+Functions below are significant and are added to xml.py
+
+def add_ground_cut: 
 1. Triangulize ground 
 2. Discard grounds under buildings
 3. Create a geodataframe that contains all traiangles objects and assign all grounds the type of concrete road
 
-modify_type:
+def modify_type:
 1. Find grounds of road and green area through intersection with streets and green area objects
 2. Modify the type of concrete ground to type of asphalt ground or green area and attach physical characteristics like Kfactor and short wave reflectance acoordingly 
 
-cut: 
+def cut: 
+
 Discard grounds and buildings that's distant from my area of study to save computing time
 
-AST:
+def AST:
 1. Calculate average surface temperature of each building and atribute them to corresponding building according to surface_id
 2. Attribute temperature of each ground triangle according to gid 
 
 ## Simulation 
 ### Case
-The case is a neighbourhood around fountaine de la Justice, Lausanne with dense buildings and roads roads network. While pavements is concrete road, streets are asphalt roads. And there is no green grounds in this area. So I add green grounds to see if it mitigate the UHI effect.
+The case is a neighbourhood around fountaine de la Justice, Lausanne with dense buildings and roads network. While pavements is concrete road, streets are asphalt roads. And there is no green grounds in this area. So I add green grounds to see if it mitigate the UHI effect.
 
 The 3D model is simulated in CitySim pro.
 ![3D view](image/3D_view.png)
 
-Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050, visualise reseulted temperature data in QGIS. All relevant images can be found under folder *image*. A sample is shown below with blue reresenting low temperature, read representing high temperature:
+Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050, and visualise reseulted temperature data in QGIS. All relevant images can be found under folder *image*. A sample is shown below with blue reresenting low temperature, red representing high temperature:
 
 1. The defalut case study at 2050
 <!-- ![Default case at 2050](image/default_2050.png) -->
@@ -124,14 +128,14 @@ With scale below
 <img src="image/scale2.png" alt="scl2" width="150"/>
 
 ## Conclusion
-In this project, open source datasets are obtained for different types of grounds. And based on them, mesh of grounds are created, and different ground surfaces are attributed right type and respective physical characteristics. The resulted .xml file is run the case of Lausanne and visualised in CitySim Pro.
+In this project, open source datasets are obtained for different types of grounds. And based on them, mesh of grounds are created, and different ground surfaces are attributed right type and respective physical characteristics. The resulted .xml file is run and the case iis visualised in CitySim Pro.
 
-One scenario, i.e. substituting original grounds of certain areas with green grounds, is demonstrated and its effects on urban heat islands is visualised in QGIS. 
+One scenario, i.e. substituting original grounds of certain areas with green grounds, is demonstrated and its effects on urban heat islands is visualised in QGIS. It's evident that the closer to green areas, the greater is decreased tempeareture. With green area, the decrease temperature is greater than 0.66&deg;C, which is perceptible in general.
 
 ## Prospect
 1. Develop an algorithm that can create adaptive mesh of grounds, i.e. finer mesh at sharp part of geometry objects.
 2. Add trees into our framework and study their effects on UHI
-3. Add water into framework and study their effects on UHI
+3. Add water into our framework and study their effects on UHI
 
 ## Reference
 1. https://github.com/ochavanne/CAD-O
