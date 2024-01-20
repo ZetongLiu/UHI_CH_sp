@@ -111,7 +111,13 @@ The case is a neighbourhood around fountaine de la Justice, Lausanne with dense 
 The 3D model is simulated in CitySim pro.
 ![3D view](image/3D_view.png)
 
-Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050, and visualise reseulted temperature data in QGIS. All relevant images can be found under folder *image*. A sample is shown below with blue reresenting low temperature, red representing high temperature:
+Run case-study with XYZ file of resolution being 2 meter, meteorological data for contemporary, 2030, 2040 and 2050, and visualise reseulted temperature data in QGIS. All relevant images can be found under folder *image*. 
+
+In QGIS, the blue zone represent the area of my study, the pink zone represents surround buildings, and the green zone represents the green grounds added in scenario 1.
+
+<img src="image/zones.png" alt="in qgis" width="500"/> 
+
+A sample is shown below with blue reresenting low temperature, red representing high temperature:
 
 1. The defalut case study at 2050
 <!-- ![Default case at 2050](image/default_2050.png) -->
