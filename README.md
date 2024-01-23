@@ -67,13 +67,14 @@ Olivier Chavanne established a framework to process and analyze information of a
 ## Grounds
 XYZ contains coordinates information of a square lattice. To put it in to use of heat computing, triangulization is done on it, i.e. dividing everyone small squares of the lattices into two triangles along the diagonal line. 
 ### Types
+Permeable pavement represents.
 Asphald ground represents roads covered by asphalt 
 Concrete ground represents roads covered by concrete
 Green grounds represents grounds that's green like grass, bushes and trees in total
-
+[Sources](#Reference)
 ### Physical attributions
 Here I list the attributons of different types of grounds that matters for 
-Kfactor represents how saturated the ground is.
+Kfactor represents the humidity in the soil.
 Shortwaverefletance represents the ability to reflect solar energy and if the grounds is darker, it is smaller.
 
 | Ground type | Kfactor | Shortwaverefletance |
@@ -81,18 +82,19 @@ Shortwaverefletance represents the ability to reflect solar energy and if the gr
 | Asphalt | 0.1 | 0.14 |
 | Concrete | 0.1 | 0.35 |
 | Green | 0.7 | 0.22 |
+| Stone slab | 0.5 | 0.14 |
 
 [Sources](#Reference)
 
 ## Functions of code for processing ground data
 Functions below are significant and are added to xml.py
 
-def add_ground_cut: 
+def add_ground_from_XYZ(ground_type, kFactor, Shortwaverefletance): 
 1. Triangulize ground 
 2. Discard grounds under buildings
 3. Create a geodataframe that contains all traiangles objects and assign all grounds the type of concrete road
 
-def modify_type:
+def modify_type():
 1. Find grounds of road and green area through intersection with streets and green area objects
 2. Modify the type of concrete ground to type of asphalt ground or green area and attach physical characteristics like Kfactor and short wave reflectance acoordingly 
 
@@ -147,6 +149,9 @@ One scenario, i.e. substituting original grounds of certain areas with green gro
 1. https://github.com/ochavanne/CAD-O
 2. Upadhyay, G ; Kämpf, J; Scartezzini, J: Ground temperature modeling: The case study of Rue des Maraîchers in Geneva, 2014, URL: https://infoscience.epfl.ch/record/198754?ln=fr
 3. https://github.com/kaemco/CitySim-Solver/wiki/The-district#groundsurface
+4. https://www.eoas.ubc.ca/courses/eosc350/content/foundations/properties/density.htm#:~:text=Remarks,2.6%20and%202.7g%2Fcc.
+5. https://www.bruk.info.pl/en/guide/stone-size-thickness-and-chamfer-should-technical-parameters-matter-to-us/
+6. https://www.sciencedirect.com/science/article/pii/S2214509518300482#sec0010
 
 
 

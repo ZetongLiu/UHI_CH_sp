@@ -351,7 +351,7 @@ def add_ground(district, terrain_df, groundtype=1, detailedSimulation=False, Sho
             dict_point = {"x": x, "y": y, "z": z}
             point = SubElement(surface, point_name, dict_point)
 
-def add_ground_cut(MO_dhn, district, terrain_df, zone_box, center_coordinates=(0,0), kFactor=0.1, groundtype=37, detailedSimulation=False, ShortWaveReflectance=0.35):  
+def add_ground_from_XYZ(MO_dhn, district, terrain_df, zone_box, center_coordinates=(0,0), kFactor=0.1, groundtype=2, detailedSimulation=False, ShortWaveReflectance=0.14):  
     x_center = center_coordinates[0]
     y_center = center_coordinates[1]
     groundsurface = SubElement(district, "GroundSurface")
@@ -396,7 +396,7 @@ def add_ground_cut(MO_dhn, district, terrain_df, zone_box, center_coordinates=(0
     # gdf=gdf[out_buildings]
     return gdf
 
-def modify_type(district, ground_data, green_data=None, street_data=None, green_groundtype=3, road_groundtype=2, green_kfactor=0.7, green_SWR=0.22, road_SWR=0.14):
+def modify_type(district, ground_data, green_data=None, street_data=None, green_groundtype=3, road_groundtype=99, green_kfactor=0.7, green_SWR=0.22, road_kfactor=0.5, road_SWR=0.14):
     
     geometry_list = []
     geometry_list2 = []
@@ -448,6 +448,7 @@ def modify_type(district, ground_data, green_data=None, street_data=None, green_
         
         if int(current_id) in road_index_list:
             surface.set("type", str(road_groundtype))
+            surface.set("kFactor", str(road_kfactor))
             surface.set("ShortWaveReflectance", str(road_SWR))
         elif int(current_id) in green_index_list:
             surface.set("type", str(green_groundtype))
@@ -492,7 +493,7 @@ def keep_road(district):
     for surface in to_remove:
         grounds.remove(surface)
 
-def cut(district, ground_data, MO_dhn, footprints, kept_range=15):
+def cut(district, ground_data, MO_dhn, footprints, kept_range=30):
     buffered_geometries = MO_dhn.geometry.buffer(kept_range)
     convex_hull = buffered_geometries.unary_union.convex_hull
     #remove distant grounds

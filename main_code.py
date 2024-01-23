@@ -210,7 +210,7 @@ def Module_1(gpkg_filepath,XYZfile, GEOADMIN_BASE_URL,
     terrain_df = pd.read_table(XYZfile, skiprows=1, delim_whitespace=True, names=['X', 'Y', 'Z'])
 
     # xml.add_ground_from_XYZ(district, terrain_df, center_coordinates)
-    ground_data = xml.add_ground_cut(MO_dhn, district, terrain_df, zone_box, center_coordinates)
+    ground_data = xml.add_ground_from_XYZ(MO_dhn, district, terrain_df, zone_box, center_coordinates)
     road_index_list, green_index_list, _, _ = xml.modify_type(district, ground_data, green_data, street_data)
 
     #write xml file of default case
@@ -315,7 +315,7 @@ def Module_KPI(ground_data, buffered_streets, itsctd_greens, road_index_list, gr
 ##################################################
 
 # Geopackage filepath
-gpkg_filepath = r"D:\Document\EPFL_Coursework\UHI_CH\dependent_files\lausanne_case.gpkg"                     #TODO
+gpkg_filepath = r"D:\Document\EPFL_Coursework\UHI_CH\dependent_files\lausanne_new.gpkg"                     #TODO
 
 # Create geometry with swissbuildings3D
 create_geometry_3D = True                                   #TODO
@@ -327,7 +327,7 @@ calculate_volume_3D = True                                 #TODO
 citysim_filepath = r"D:\Document\SemesterProject\CitySim.exe" #TODO
 
 # XML name to export
-directory_path = r"fountaine_Lausanne" #+f"_{Year_of_cli}"                                #TODO
+directory_path = r"Lausanne_case"                              #TODO
 os.makedirs(directory_path, exist_ok=True)                           
                                       
 # XML source files
@@ -344,7 +344,8 @@ def main():
     
     # Generate individual buildings XML
     print('***Module 1*** \n')
-    Year_of_cli=['Contemporary', '2030', '2040'] 
+    # Year_of_cli=['RCP45_2030'] 
+    Year_of_cli=['Contemporary', 'RCP45_2030', 'RCP_45_2040'] 
     for year in Year_of_cli:
         subdirectory_path = os.path.join(directory_path, f"{year}")
         os.makedirs(subdirectory_path, exist_ok=True)     

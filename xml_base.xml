@@ -104,7 +104,12 @@
  		</Composite>
 
 		<Composite Uvalue="0.0" id="5" name="Trees"/>
-
+		<Composite Uvalue="0.0" id="99" name="Permeable Pavement">
+            <Layer Conductivity="1.48" Cp="1100.0" Density="2700.0" Name="Stone slab " Thickness="0.07"/>
+            <Layer Conductivity="2.0" Cp="1051.2" Density="2000.0" Name="Soil sand and gravel " Thickness="0.05"/>
+            <Layer Conductivity="2.0" Cp="1051.2" Density="2000.0" Name="Gravel " Thickness="0.05"/>
+            <Layer Conductivity="2.4" Cp="1200.0" Density="1600.0" Name="Molasse_1" Thickness="0.875"/>
+        </Composite>
 
 		<OccupancyDayProfile id="1" name="Residential" p1="1.0" p2="1.0" p3="1.0" p4="1.0" p5="1.0" p6="1.0" p7="0.8" p8="0.6" p9="0.4" p10="0.4" p11="0.4" p12="0.6" p13="0.8" p14="0.6" p15="0.4" p16="0.4" p17="0.6" p18="0.8" p19="0.8" p20="0.8" p21="0.8" p22="1.0" p23="1.0" p24="1.0"/>
 		<OccupancyDayProfile id="2" name="Office" p1="0.0" p2="0.0" p3="0.0" p4="0.0" p5="0.0" p6="0.0" p7="0.0" p8="0.2" p9="0.4" p10="0.6" p11="0.8" p12="0.8" p13="0.4" p14="0.6" p15="0.8" p16="0.8" p17="0.6" p18="0.4" p19="0.0" p20="0.0" p21="0.0" p22="0.0" p23="0.0" p24="0.0"/>
