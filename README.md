@@ -82,7 +82,7 @@ Shortwaverefletance represents the ability to reflect solar energy and if the gr
 | Asphalt | 0.1 | 0.14 |
 | Concrete | 0.1 | 0.35 |
 | Green | 0.7 | 0.22 |
-| Stone slab | 0.5 | 0.14 |
+| Permeable Pavement | 0.5 | 0.14 |
 
 [Sources](#Reference)
 

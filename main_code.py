@@ -327,7 +327,7 @@ calculate_volume_3D = True                                 #TODO
 citysim_filepath = r"D:\Document\SemesterProject\CitySim.exe" #TODO
 
 # XML name to export
-directory_path = r"Lausanne_case"                              #TODO
+directory_path = r"Lausanne_case_new"                              #TODO
 os.makedirs(directory_path, exist_ok=True)                           
                                       
 # XML source files
@@ -344,7 +344,6 @@ def main():
     
     # Generate individual buildings XML
     print('***Module 1*** \n')
-    # Year_of_cli=['RCP45_2030'] 
     Year_of_cli=['Contemporary', 'RCP45_2030', 'RCP_45_2040'] 
     for year in Year_of_cli:
         subdirectory_path = os.path.join(directory_path, f"{year}")
