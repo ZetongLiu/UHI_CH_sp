@@ -517,7 +517,7 @@ def cut(district, ground_data, MO_dhn, footprints, kept_range=15):
     to_remove_b=[]
     buffered_geometries_2 = MO_dhn.geometry.buffer(kept_range)
     convex_hull_2 = buffered_geometries_2.unary_union.convex_hull
-    not_in_convex_hull_mask_2 = ~footprints.geometry.intersects(convex_hull_2)
+    not_in_convex_hull_mask_2 = ~footprints.geometry.within(convex_hull_2)
     remove_list_2 = footprints.loc[not_in_convex_hull_mask_2, 'bid'].tolist()
     for building in district.iter("Building"):
         current_id = building.attrib["id"]
